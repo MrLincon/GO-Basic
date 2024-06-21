@@ -4,6 +4,7 @@ import (
 	"GO-Basic/initializers"
 	"GO-Basic/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"net/http"
 )
 
@@ -73,10 +74,15 @@ func FetchAllPost(c *gin.Context) {
 func FetchPostById(c *gin.Context) {
 
 	id := c.Param("id")
+	parsedID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID format"})
+		return
+	}
 
 	var post models.Post
 
-	result := initializers.DB.First(&post, id)
+	result := initializers.DB.First(&post, parsedID)
 
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
@@ -96,6 +102,11 @@ func FetchPostById(c *gin.Context) {
 func UpdatePost(c *gin.Context) {
 
 	id := c.Param("id")
+	parsedID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID format"})
+		return
+	}
 
 	var body struct {
 		Body  string
@@ -109,7 +120,7 @@ func UpdatePost(c *gin.Context) {
 
 	var post models.Post
 
-	initializers.DB.First(&post, id)
+	initializers.DB.First(&post, parsedID)
 
 	result := initializers.DB.Model(&post).Updates(models.Post{
 
@@ -134,10 +145,15 @@ func UpdatePost(c *gin.Context) {
 
 func DeletePost(c *gin.Context) {
 	id := c.Param("id")
+	parsedID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID format"})
+		return
+	}
 
 	var post models.Post
 
-	result := initializers.DB.Delete(&post, id)
+	result := initializers.DB.Delete(&post, parsedID)
 
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)

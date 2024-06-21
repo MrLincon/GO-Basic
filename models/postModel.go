@@ -1,12 +1,13 @@
 package models
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
 )
 
 type Post struct {
-	ID        int64          `gorm:"primaryKey" json:"id"`
+	ID        uuid.UUID      `gorm:"type:uuid;default:uuid_generate_v4()" json:"id"`
 	Title     string         `json:"title"`
 	Body      string         `json:"body"`
 	CreatedAt time.Time      `json:"created_at"`
@@ -15,6 +16,6 @@ type Post struct {
 }
 
 func (post *Post) BeforeCreate(tx *gorm.DB) (err error) {
-	post.ID = time.Now().UnixMilli()
+	post.ID = uuid.New()
 	return
 }
