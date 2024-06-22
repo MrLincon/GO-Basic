@@ -21,7 +21,7 @@ func CreatePost(c *gin.Context) {
 	}
 
 	if body.Title == "" || body.Body == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Title and body are required"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "title and body are required"})
 		return
 	}
 
